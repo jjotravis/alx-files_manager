@@ -6,7 +6,7 @@ const { ObjectId } = require('mongodb');
 const fs = require('fs');
 const Bull = require('bull');
 
-class FileController {
+class FilesController {
   static async postUpload(request, response) {
     const Queue = new Bull('Queue');
 
@@ -93,4 +93,4 @@ class FileController {
   }
 }
 
-module.exports = FileController;
+module.exports = FilesController;
