@@ -2,7 +2,7 @@ import { Router } from 'express';
 import AppController from '../controllers/AppController';
 import UsersController from '../controllers/UserController';
 import AuthController from '../controllers/AuthController';
-import FilesController from '../controllers/FileContoller';
+import FilesController from '../controllers/FilesContoller';
 
 const router = Router();
 
