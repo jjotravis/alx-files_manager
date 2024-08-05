@@ -147,6 +147,60 @@ class FilesController {
     });
     return response.send(filesArr);
   }
+
+  static async putPublish(request, response) {
+    const token = request.header('X-Token') || null;
+    if (!token) return response.status(401).send({ error: 'Unauthorized' });
+
+    const RedisToken = await RedisClient.get(`auth_${token}`);
+    if (!RedisToken) return response.status(401).send({ error: 'Unauthorized' });
+
+    const user = await DBClient.db.collection('users').findOne({ _id: ObjectId(RedisToken) });
+    if (!user) return response.status(401).send({ error: 'Unauthorized' });
+
+    const fileId = request.params.id || '';
+    let file = await DBClient.db.collection('files').findOne({ _id: ObjectId(fileId), userId: user._id });
+    if (!file) return response.status(404).send({ error: 'Not found' });
+
+    await DBClient.db.collection('files').update({ _id: ObjectId(fileId) }, { $set: { isPublic: true } });
+    file = await DBClient.db.collection('file').findOne({ _id: ObjectId(fileId), userId: user._Id });
+
+    return response.send({
+      id: file._id,
+      usedId: file.usedId,
+      name: file.name,
+      type: file.type,
+      isPublic: file.filePublic,
+      parentId: file.parentId,
+    });
+  }
+
+  static async putUnpublish(request, response) {
+    const token = request.header('X-Token') || null;
+    if (!token) return response.status(401).send({ error: 'Unauthorized' });
+
+    const RedisToken = await RedisClient.get(`auth_${token}`);
+    if (!RedisToken) return response.status(401).send({ error: 'Unauthorized' });
+
+    const user = await DBClient.db.collection('users').findOne({ _id: ObjectId(RedisToken) });
+    if (!user) return response.status(401).send({ error: 'Unauthorized' });
+
+    const fileId = request.params.id || '';
+    let file = await DBClient.db.collection('files').findOne({ _id: ObjectId(fileId), userId: user._id });
+    if (!file) return response.status(404).send({ error: 'Not found' });
+
+    await DBClient.db.collection('files').update({ _id: ObjectId(fileId) }, { $set: { isPublic: false } });
+    file = await DBClient.db.collection('file').findOne({ _id: ObjectId(fileId), userId: user._Id });
+
+    return response.send({
+      id: file._id,
+      usedId: file.usedId,
+      name: file.name,
+      type: file.type,
+      isPublic: file.filePublic,
+      parentId: file.parentId,
+    });
+  }
 }
 
 module.exports = FilesController;
