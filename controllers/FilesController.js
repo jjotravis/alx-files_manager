@@ -163,8 +163,8 @@ class FilesController {
     let file = await DBClient.db.collection('files').findOne({ _id: ObjectId(fileId), userId: user._id });
     if (!file) return response.status(404).send({ error: 'Not found' });
 
-    await DBClient.db.collection('files').update({ _id: ObjectId(fileId) }, { $set: { isPublic: true } });
-    file = await DBClient.db.collection('file').findOne({ _id: ObjectId(fileId), userId: user._Id });
+    await DBClient.db.collection('files').updateOne({ _id: ObjectId(fileId) }, { $set: { isPublic: true } });
+    file = await DBClient.db.collection('files').findOne({ _id: ObjectId(fileId), userId: user._Id });
 
     return response.send({
       id: file._id,
@@ -190,8 +190,8 @@ class FilesController {
     let file = await DBClient.db.collection('files').findOne({ _id: ObjectId(fileId), userId: user._id });
     if (!file) return response.status(404).send({ error: 'Not found' });
 
-    await DBClient.db.collection('files').update({ _id: ObjectId(fileId) }, { $set: { isPublic: false } });
-    file = await DBClient.db.collection('file').findOne({ _id: ObjectId(fileId), userId: user._Id });
+    await DBClient.db.collection('files').updateOne({ _id: ObjectId(fileId) }, { $set: { isPublic: false } });
+    file = await DBClient.db.collection('files').findOne({ _id: ObjectId(fileId), userId: user._Id });
 
     return response.send({
       id: file._id,
